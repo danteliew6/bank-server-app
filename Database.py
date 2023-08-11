@@ -4,7 +4,7 @@ from Account import Account
 class Database:
     accounts = {
         '1': Customer('1', Account('123876', 'Savings', 0, '123456'), 'dante', 'liew', '12345678'),
-        '2': Customer('2', Account('456109', 'Checking', 1000, '654321'), 'john', 'doe', '87654321'),
+        '2': Customer('2', Account('456109', 'Checking', 1000, '654321'), 'helena', 'chen', '87654321'),
         '3': Customer('3', Account('789686', 'Savings', 500, '987654'), 'jane', 'smith', '1357924'),
         '4': Customer('4', Account('101112', 'Checking', 2000, '111000'), 'alex', 'brown', '2468135'),
         '5': Customer('5', Account('131415', 'Savings', 100, '514235'), 'sarah', 'lee', '9753186'),
