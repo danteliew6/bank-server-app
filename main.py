@@ -1,2 +1,2 @@
-if __name__ == "__main__":
-    pass
+from Database import Database
+print(Database.accounts)
