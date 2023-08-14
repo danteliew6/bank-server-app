@@ -1,4 +1,5 @@
 from Transaction import Transaction
+
 class Account:
     def __init__(self, account_number, name, balance, pin):
         self.account_number = account_number

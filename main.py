@@ -3,11 +3,11 @@ from Database import Database
 def login():
     pin = input("Enter your PIN: ")
     customer = database.get_customer_by_pin(pin)
-    if customer:
-        return customer
-    else:
+    while not customer:
         print("Invalid PIN. Please try again.")
-        return None
+        pin = input("Enter your PIN: ")
+        customer = database.get_customer_by_pin(pin)
+    return customer
 
 def show_balance(customer):
     balance = customer.get_account_balance()
@@ -38,7 +38,7 @@ def transfer_funds(customer):
         print("Recipient account not found.")
 
 def display_last_transactions(customer):
-    num_transactions = int(input("Enter the number of transactions to display: "))
+    num_transactions = 10
     transactions = customer.get_last_transactions(num_transactions)
     for transaction in transactions:
         print("Transaction ID:", transaction.transaction_id)
@@ -70,7 +70,7 @@ if customer:
         print("2. Withdraw Money")
         print("3. Deposit Money")
         print("4. Transfer Funds")
-        print("5. Display Last Transactions")
+        print("5. Display Last 10 Transactions")
         print("6. Log out")
 
         choice = int(input("Enter your choice (1-6): "))
