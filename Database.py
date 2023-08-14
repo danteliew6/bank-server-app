@@ -3,7 +3,7 @@ from Account import Account
 
 class Database:
     accounts = {
-        '1': Customer('1', Account('123876', 'Savings', 0, '123456'), 'dante', 'liew', '12345678'),
+        '1': Customer('1', Account('123876', 'Savings', 500, '123456'), 'dante', 'liew', '12345678'),
         '2': Customer('2', Account('456109', 'Savings', 1000, '654321'), 'helena', 'chen', '87654321'),
         '3': Customer('3', Account('789686', 'Savings', 500, '987654'), 'jane', 'smith', '1357924'),
         '4': Customer('4', Account('101112', 'Savings', 2000, '111000'), 'alex', 'brown', '2468135'),
