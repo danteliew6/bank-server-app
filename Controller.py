@@ -1,4 +1,5 @@
 from Database import Database
+import datetime
 
 class Controller:
     database = Database()
@@ -19,6 +20,8 @@ class Controller:
     def withdraw_money(self,customer):
         amount = float(input("Enter the amount to withdraw: "))
         if customer.withdraw(amount):
+            self.database.update_balance(customer.account.account_number, customer.account.balance)
+            self.database.add_transaction(customer.account.account_number, amount, datetime.datetime.now(), 'DR', customer.account.balance, 'Withdraw')
             print("Withdrawal successful.")
         else:
             print("Insufficient balance.")
@@ -26,6 +29,8 @@ class Controller:
     def deposit_money(self,customer):
         amount = float(input("Enter the amount to deposit: "))
         customer.deposit(amount)
+        self.database.update_balance(customer.account.account_number, customer.account.balance)
+        self.database.add_transaction(customer.account.account_number, amount, datetime.datetime.now(), 'CR', customer.account.balance, 'Deposit')
         print("Deposit successful.")
 
     def transfer_funds(self,customer):
@@ -34,6 +39,8 @@ class Controller:
         recipient_customer = self.database.get_customer_by_account_number(recipient_account_number)
         if recipient_customer:
             if customer.transfer_funds(amount, recipient_customer.account):
+                self.database.update_balance(customer.account.account_number, customer.account.balance)
+                self.database.add_transaction(customer.account.account_number, amount, datetime.datetime.now(), 'DR', customer.account.balance, 'Transfer')
                 print("Transfer successful.")
             else:
                 print("Insufficient balance.")
@@ -41,8 +48,7 @@ class Controller:
             print("Recipient account not found.")
 
     def display_last_transactions(self,customer):
-        num_transactions = 10
-        transactions = customer.get_last_transactions(num_transactions)
+        transactions = self.database.get_last_10_transactions(customer.account.account_number)
         for transaction in transactions:
             print("Transaction ID:", transaction.transaction_id)
             print("Amount:", transaction.amount)

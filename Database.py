@@ -1,5 +1,6 @@
 from Customer import Customer
 from Account import Account
+from Transaction import Transaction
 import mysql.connector
 from mysql.connector import Error
 
@@ -63,16 +64,36 @@ class Database:
         self.connection.commit()
 
     def get_customer_by_pin(self, pin):
-        query = f"SELECT * FROM CUSTOMER left join ACCOUNT on customer.customer_id = account.account_id where account.pin = {pin}"
+        query = f"SELECT * FROM CUSTOMER left join ACCOUNT on customer.customer_id = account.customer_id where account.pin = {pin}"
         result = execute_read_query(self.connection,query)
         customer_tuple = result[0]
-        customer = Customer(customer_tuple[0], Account(customer_tuple[6], customer_tuple[7], customer_tuple[8], customer_tuple[9]), customer_tuple[1], customer_tuple[2], customer_tuple[3])
+        customer = Customer(customer_tuple[0], Account(customer_tuple[6], customer_tuple[7], float(customer_tuple[8]), customer_tuple[9]), customer_tuple[1], customer_tuple[2], customer_tuple[3])
         return customer
 
 
     def get_customer_by_account_number(self, account_number):
-        query = f"SELECT * FROM CUSTOMER WHERE left join ACCOUNT on customer.customer_id = account.account_id where account.account_id = {account_number}"
+        query = f"SELECT * FROM CUSTOMER left join ACCOUNT on customer.customer_id = account.customer_id where account.account_id = {account_number}"
         result = execute_read_query(self.connection,query)
         customer_tuple = result[0]
-        customer = Customer(customer_tuple[0], Account(customer_tuple[6], customer_tuple[7], customer_tuple[8]), customer_tuple[1], customer_tuple[2], customer_tuple[3])
+        customer = Customer(customer_tuple[0], Account(customer_tuple[6], customer_tuple[7], float(customer_tuple[8]), customer_tuple[9]), customer_tuple[1], customer_tuple[2], customer_tuple[3])
         return customer
+    
+    def update_balance(self, account_id, balance):
+        sql = "UPDATE ACCOUNT SET balance = %s WHERE account_id = %s"
+        val = [(balance, account_id)]
+        cursor = self.connection.cursor()
+        cursor.executemany(sql,val)
+        self.connection.commit()
+
+    def add_transaction(self, account_id, amount, date, transaction_type, available_balance, description):
+        sql = "INSERT INTO TRANSACTION (account_id, amount, date, transaction_type, available_balance, description) values (%s, %s, %s, %s, %s, %s)"
+        val = [(account_id, amount, date, transaction_type, available_balance, description)]
+        cursor = self.connection.cursor()
+        cursor.executemany(sql,val)
+        self.connection.commit()
+
+    def get_last_10_transactions(self, account_number):
+        query = f"SELECT * FROM TRANSACTION WHERE account_id = {account_number} ORDER BY date DESC LIMIT 10"
+        result = execute_read_query(self.connection,query)
+        print(result)
+        return [Transaction(transaction[0], transaction[2], transaction[3], transaction[4], transaction[5], transaction[6]) for transaction in result]
